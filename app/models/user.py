@@ -7,10 +7,10 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     public_id = db.Column(db.String(50), unique=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(250), nullable=False)
 
-    def __init__(self, username, password):
-        self.public_id = str(uuid.uuid4())
+    def __init__(self, public_id, username, password):
+        self.public_id = public_id
         self.username = username
         self.password = password
 
