@@ -32,9 +32,21 @@ class ProjectListResource(Resource):
     def post(self):
         print (request.get_json())
         data = request.get_json()
+
         project = ProjectService.create_project(**data)
-        return jsonify(project.serialize()), 201
+        if project:
+            return jsonify(project.serialize())
+        # return jsonify(project.serialize()), 201
     
+
+class UserProjectsResource(Resource):
+    def get(self, public_id):
+        projects = ProjectService.find_projects_by_user(public_id)
+        print("en la ruta",projects)
+        if projects:
+            return jsonify([project.serialize() for project in projects])
+        return {'message': f"No projects found for user with public_id '{public_id}'"}, 404
 
 api.add_resource(ProjectResource, '/projects/<int:project_id>')
 api.add_resource(ProjectListResource, '/projects')
+api.add_resource(UserProjectsResource, '/projects/user/<string:public_id>')

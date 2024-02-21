@@ -17,7 +17,7 @@ def create_app():
     db.init_app(app)
 
     # # Habilitar CORS si es necesario
-    CORS(app)
+    CORS(app, resources={r"*": {"origins": "*"}})
 
     # # Importar e inicializar las rutas de la API
     from app.api.project_api import project_api_blueprint
@@ -42,5 +42,7 @@ def create_app():
     # # Importar e inicializar los manejadores de errores
     #from app.common import error_handlers
     #error_handlers.init_app(app)
+    with app.app_context():
+        db.create_all()
 
     return app
