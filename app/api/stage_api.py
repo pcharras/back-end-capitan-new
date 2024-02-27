@@ -34,7 +34,8 @@ class StageListResource(Resource):
     def post(self):
         data = request.get_json()
         stage = StageService.create_stage(**data)
-        return jsonify(stage.serialize()), 201
+        print(stage);
+        return jsonify(stage.serialize())
         
 
 api.add_resource(StageResource, '/stages/<int:stage_id>')

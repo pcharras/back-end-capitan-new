@@ -30,14 +30,14 @@ class ProjectStageResource(Resource):
 class ProjectStageListResource(Resource):
     def get(self, project_id):
         project_stages = ProjectStageService.get_stages_by_project_id(project_id)
-        return jsonify([stage.serialize() for stage in project_stages])
+        return jsonify(project_stages)
     def post(self, project_id):
         data = request.get_json()
         if not data or 'stage_id' not in data:
             return {'message': 'Missing required parameters'}, 400
         try:
             project_stage = ProjectStageService.create_project_stage(project_id, **data)
-            return jsonify(project_stage.serialize()), 201
+            return jsonify(project_stage.serialize())
         except Exception as e:
             return {'message': str(e)}, 500
         
