@@ -32,7 +32,29 @@ class ProjectStageService:
 
     @staticmethod
     def get_stages_by_project_id(project_id):
-        return ProjectStage.query.filter_by(project_id=project_id).all()
+        # return ProjectStage.query.filter_by(project_id=project_id).all() 
+        #Se modifico lo anterior por lo siguiente porque no devolvia datos de las stages
+          # unión entre las tablas ProjectStage y Stage
+        stages_with_data = db.session.query(ProjectStage, Stage)\
+            .join(Stage, ProjectStage.stage_id == Stage.stage_id)\
+            .filter(ProjectStage.project_id == project_id)\
+            .all()
+
+        stages_data = []
+
+        for project_stage, stage in stages_with_data:
+            # diccionario con los datos de cada etapa
+            stage_data = {
+                'id': stage.stage_id,
+                'name': stage.name,
+                'description': stage.description
+            }
+            stages_data.append(stage_data)
+        return stages_data
+
+
+
+
     
     @staticmethod
     def create_project_stage(project_id, stage_id, assistant_id=None, stage_description=None):

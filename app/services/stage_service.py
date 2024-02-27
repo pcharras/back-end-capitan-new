@@ -9,18 +9,21 @@ class StageService:
         return Stage.query.get(stage_id)
 
     @staticmethod
-    def create_stage(description):
+    def create_stage(name, description):
         print(description);
-        new_stage = Stage(description=description)
+        new_stage = Stage(name=name, description=description)
         db.session.add(new_stage)
         db.session.commit()
         return new_stage
 
     @staticmethod
-    def update_stage(stage_id, description=None):
+    def update_stage(stage_id, name=None, description=None):
         stage = StageService.get_stage_by_id(stage_id)
-        if stage and description is not None:
-            stage.description = description
+        if stage:
+            if name is not None:
+                stage.name = name
+            if description is not None:
+                stage.description = description
             db.session.commit()
         return stage
 
