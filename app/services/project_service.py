@@ -1,4 +1,5 @@
 from app.models import Project
+from app.models import ProjectStage
 from app import db
 from datetime import date
 from app.models import User
@@ -46,11 +47,31 @@ class ProjectService:
 
     @staticmethod
     def delete_project(project_id):
+        # Obtener el proyecto por su ID
         project = ProjectService.get_project_by_id(project_id)
+    
         if project:
-            db.session.delete(project)
-            db.session.commit()
-            return True
+            try:
+                # Obtener todas las etapas asociadas al proyecto
+                stages = ProjectStage.query.filter_by(project_id=project_id).all()
+                
+                # Eliminar cada etapa asociada al proyecto
+                for stage in stages:
+                    db.session.delete(stage)
+                
+                # Eliminar el proyecto
+                db.session.delete(project)
+                
+                # Confirmar los cambios en la base de datos
+                db.session.commit()
+                
+                return True
+            except Exception as e:
+                # Revertir la transacción en caso de error
+                db.session.rollback()
+                print(f"Error al eliminar el proyecto: {e}")
+                return False
+        
         return False
 
     @staticmethod

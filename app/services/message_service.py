@@ -10,8 +10,8 @@ class MessageService:
         return Message.query.get(message_id)
 
     @staticmethod
-    def create_message(thread_id, message_text, message_timestamp=None):
-        new_message = Message(thread_id=thread_id, message=message_text, timestamp=message_timestamp or datetime.now())
+    def create_message(thread_id, message_text, message_timestamp=None, sender="user"):
+        new_message = Message(thread_id=thread_id, message=message_text, timestamp=message_timestamp or datetime.now(),sender=sender)
         db.session.add(new_message)
         db.session.commit()
         return new_message
@@ -39,3 +39,7 @@ class MessageService:
     @staticmethod
     def get_all_messages():
         return Message.query.all()
+#traer mensajes por hilo
+    @staticmethod
+    def get_messages_by_thread(thread_id):
+        return Message.query.filter_by(thread_id=thread_id).all()    

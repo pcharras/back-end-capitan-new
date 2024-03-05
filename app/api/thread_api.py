@@ -34,7 +34,15 @@ class ThreadListResource(Resource):
     def post(self):
         data = request.get_json()
         thread = ThreadService.create_thread(**data)
-        return jsonify(thread.serialize()), 201
+        return jsonify(thread.serialize())
 
+class ThreadByStageAndProjectResource(Resource):
+    def get(self, stage_id, project_id):
+        thread = ThreadService.get_thread_by_stage_and_project(stage_id, project_id)
+        if thread:
+            return jsonify(thread.serialize())
+        return {'message': 'Thread not found for stage_id and project_id'}, 404
+
+api.add_resource(ThreadByStageAndProjectResource, '/threads/<int:project_id>/<int:stage_id>')
 api.add_resource(ThreadResource, '/threads/<int:thread_id>')
 api.add_resource(ThreadListResource, '/threads')

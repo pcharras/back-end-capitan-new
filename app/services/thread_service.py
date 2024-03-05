@@ -2,8 +2,21 @@
 
 from app.models import Thread
 from app import db
+from openai import OpenAI
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+api_key = os.getenv('API_KEY')
+client = OpenAI(api_key=api_key)
+
 
 class ThreadService:
+    @staticmethod
+    def create_openai_thread():
+        new_thread = client.beta.threads.create()
+        return new_thread
+
     @staticmethod
     def get_thread_by_id(thread_id):
         return Thread.query.get(thread_id)
@@ -42,3 +55,7 @@ class ThreadService:
     @staticmethod
     def get_all_threads():
         return Thread.query.all()
+
+    @staticmethod
+    def get_thread_by_stage_and_project(stage_id, project_id):
+        return Thread.query.filter_by(stage_id=stage_id, project_id=project_id).first()

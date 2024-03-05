@@ -3,6 +3,7 @@
 from flask import Blueprint, request, jsonify
 from flask_restful import Api, Resource
 from app.services.message_service import MessageService
+from app.services.openai_service import OpenAIService
 
 message_api_blueprint = Blueprint('message_api', __name__)
 api = Api(message_api_blueprint)
@@ -33,8 +34,20 @@ class MessageListResource(Resource):
         
     def post(self):
         data = request.get_json()
-        message = MessageService.create_message(**data)
-        return jsonify(message.serialize()), 201
+        # print(data)
+        # message = MessageService.create_message(**data)
+        response = OpenAIService.send_to_openai_and_save(**data)
+        response_from_openai = response 
+        print("respuesta en la ruta",response_from_openai)
+        return jsonify(response_from_openai.serialize())
+
+class MessagebyThreadListResource(Resource):       
+    def get(self, thread_id):
+            messages = MessageService.get_messages_by_thread(thread_id)
+            return jsonify([message.serialize() for message in messages])
+
+
 
 api.add_resource(MessageResource, '/messages/<int:message_id>')
 api.add_resource(MessageListResource, '/messages')
+api.add_resource(MessagebyThreadListResource, '/messages/threads/<int:thread_id>')

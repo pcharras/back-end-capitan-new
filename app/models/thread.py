@@ -13,7 +13,7 @@ class Thread(db.Model):
 
     def serialize(self):
         return {
-            "id": self.thread_id,
+            "thread_id": self.thread_id,
             "timestamp": self.timestamp.isoformat(),
             "stage_id": self.stage_id,
             "project_id": self.project_id,

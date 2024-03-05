@@ -45,7 +45,7 @@ class UserProjectsResource(Resource):
         print("en la ruta",projects)
         if projects:
             return jsonify([project.serialize() for project in projects])
-        return {'message': f"No projects found for user with public_id '{public_id}'"}, 404
+        return projects
 
 api.add_resource(ProjectResource, '/projects/<int:project_id>')
 api.add_resource(ProjectListResource, '/projects')
