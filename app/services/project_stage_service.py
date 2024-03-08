@@ -91,5 +91,5 @@ class ProjectStageService:
             db.session.rollback()
             raise e 
         # Devuelve el nuevo objeto ProjectStage creado
-        print(new_project_stage, thread)
-        return new_project_stage, thread
+        print(new_project_stage,)
+        return new_project_stage

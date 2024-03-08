@@ -31,17 +31,16 @@ class ProjectStageListResource(Resource):
     def get(self, project_id):
         project_stages = ProjectStageService.get_stages_by_project_id(project_id)
         return jsonify(project_stages)
+
     def post(self, project_id):
         data = request.get_json()
         if not data or 'stage_id' not in data:
             return {'message': 'Missing required parameters'}, 400
         try:
-            new_project_stage, thread = ProjectStageService.create_project_stage(project_id, **data)
-            print(new_project_stage, thread.id,"created_at", thread.created_at )
+            new_project_stage = ProjectStageService.create_project_stage(project_id, **data)
+            print(new_project_stage)
             response_data = {
-            'project_stage': new_project_stage.serialize(),
-            'thread_id': thread.id,
-            'Created_thread_id': thread.created_at
+            'project_stage': new_project_stage.serialize()
             }
             return jsonify(response_data)
         except Exception as e:
