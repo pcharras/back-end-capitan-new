@@ -74,8 +74,8 @@ class ProjectStageService:
             raise ValueError("Etapa no encontrada")
 
         # Crea un nuevo hilo de conversación
-        thread = ThreadService.create_openai_thread()
-        print(thread)
+        # thread = ThreadService.create_openai_thread()
+        # print(thread)
         # Crea un nuevo objeto ProjectStage con el asistente y el hilo de conversación
         new_project_stage = ProjectStage(
             project_id=project_id,

@@ -41,7 +41,7 @@ class ThreadByStageAndProjectResource(Resource):
         thread = ThreadService.get_thread_by_stage_and_project(stage_id, project_id)
         if thread:
             return jsonify(thread.serialize())
-        return {'message': 'Thread not found for stage_id and project_id'}, 404
+        return {}, 200
 
 api.add_resource(ThreadByStageAndProjectResource, '/threads/<int:project_id>/<int:stage_id>')
 api.add_resource(ThreadResource, '/threads/<int:thread_id>')

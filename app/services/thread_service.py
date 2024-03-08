@@ -1,10 +1,11 @@
 # services/thread_service.py
-
+from datetime import date
 from app.models import Thread
 from app import db
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
+from app.models import User
 
 load_dotenv()
 api_key = os.getenv('API_KEY')
@@ -22,11 +23,25 @@ class ThreadService:
         return Thread.query.get(thread_id)
 
     @staticmethod
-    def create_thread(timestamp, stage_id, project_id,assistant_thread_id):
-        new_thread = Thread(timestamp=timestamp, stage_id=stage_id, project_id=project_id,assistant_thread_id=assistant_thread_id)
-        db.session.add(new_thread)
-        db.session.commit()
-        return new_thread
+    def create_thread( stage_id, project_id, user_public_id):
+        user = User.query.filter_by(public_id=user_public_id).first()
+        if user:
+            user_id = user.id
+
+        # Crear un hilo en OpenAI
+            openai_thread = ThreadService.create_openai_thread()
+
+            # # Esperar hasta que OpenAI responda
+            # while not openai_thread:
+            #     time.sleep(1)  # Esperar 1 segundo antes de volver a verificar
+            #     openai_thread = ThreadService.create_openai_thread()
+            new_thread = Thread(stage_id=stage_id, project_id=project_id, assistant_thread_id= openai_thread.id, user_id=user_id, timestamp= date.today())
+            db.session.add(new_thread)
+            db.session.commit()
+            return new_thread
+        else:
+            print(f"No se encontró ningún usuario con el public_id '{user_public_id}'")
+            return None
 
     @staticmethod
     def update_thread(thread_id, timestamp=None, stage_id=None, project_id=None,assistant_thread_id=None):

@@ -15,7 +15,6 @@ class Project(db.Model):
     date = db.Column(db.Date, nullable=False, default=date.today)
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     creator = db.relationship('User', backref='created_projects', foreign_keys=[creator_id])
-    # colaboradores
     collaborators = db.relationship('User', secondary=user_project_association, backref='projects')
 
     def serialize(self):
@@ -24,7 +23,8 @@ class Project(db.Model):
             "name": self.name,
             "description": self.description,
             "date": self.date.isoformat() if self.date else None,
-            "creator": self.creator_id if self.creator else None
+            "creator": self.creator_id if self.creator else None,
+            "collaborators": [user.serialize() for user in self.collaborators]
         }
     
     def __init__(self, name, creator_id=None, description=None, date=None):

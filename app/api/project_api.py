@@ -5,6 +5,7 @@ from app.services.project_service import ProjectService
 project_api_blueprint = Blueprint('project_api', __name__)
 api = Api(project_api_blueprint)
 
+
 class ProjectResource(Resource):
     def get(self, project_id):
         project = ProjectService.get_project_by_id(project_id)
@@ -47,6 +48,17 @@ class UserProjectsResource(Resource):
             return jsonify([project.serialize() for project in projects])
         return projects
 
+class CollaboratorResource(Resource):
+    def post(self, project_id):
+        data = request.get_json()
+        #user_id es public_id
+        success, message = ProjectService.add_collaborator_to_project(project_id, **data)
+        if success:
+            return {'message': message}, 200
+        else:
+            return {'message': message}, 404
+
 api.add_resource(ProjectResource, '/projects/<int:project_id>')
 api.add_resource(ProjectListResource, '/projects')
 api.add_resource(UserProjectsResource, '/projects/user/<string:public_id>')
+api.add_resource(CollaboratorResource, '/projects/collaborators/<int:project_id>')

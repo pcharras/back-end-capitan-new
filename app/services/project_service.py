@@ -93,3 +93,19 @@ class ProjectService:
                 # Manejar el caso donde no se encuentra el usuario
             print(f"No se encontró ningún usuario con el public_id '{public_id}'")
             return None   
+    @staticmethod
+    def add_collaborator_to_project(project_id, user_id):
+        project = Project.query.get(project_id)
+        if project:
+            # Buscar el usuario por su ID
+            collaborator = User.query.filter_by(public_id=user_id).first()
+            if collaborator:
+                if collaborator in project.collaborators:
+                    return False, "El usuario ya es colaborador del proyecto."
+                project.collaborators.append(collaborator)
+                db.session.commit()
+                return True, "Colaborador agregado exitosamente al proyecto."
+            else:
+                return False, f"No se encontró ningún usuario con el public_id '{collaborator_id}'."
+        else:
+            return False, f"No se encontró ningún proyecto con el ID '{project_id}'."
