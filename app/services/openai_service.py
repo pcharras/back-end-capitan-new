@@ -76,3 +76,19 @@ class OpenAIService:
         db.session.add(response_message)
         db.session.commit()
         return response_message
+
+    @staticmethod
+    def getAssistantsOpenai():
+        assistants = client.beta.assistants.list()
+        assistants_data = []
+        for assistant in assistants.data:
+            assistant_data = {
+                "id": assistant.id,
+                "name": assistant.name,
+                "instructions": assistant.instructions,
+                "model": assistant.model,
+                "created_at": assistant.created_at
+            }
+            assistants_data.append(assistant_data)
+        # print("assistant data en servicio openai", assistants_data)
+        return assistants_data
