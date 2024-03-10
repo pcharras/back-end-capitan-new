@@ -42,4 +42,10 @@ class MessageService:
 #traer mensajes por hilo
     @staticmethod
     def get_messages_by_thread(thread_id):
-        return Message.query.filter_by(thread_id=thread_id).all()    
+        return Message.query.filter_by(thread_id=thread_id).all()  
+
+#eliminar mensajes por hilo  
+    def delete_messages_by_thread(thread_id):
+        messages = MessageService.get_messages_by_thread(thread_id)
+        for message in messages:
+            MessageService.delete_message(message.message_id)

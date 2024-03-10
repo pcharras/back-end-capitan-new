@@ -45,7 +45,8 @@ class MessagebyThreadListResource(Resource):
     def get(self, thread_id):
             messages = MessageService.get_messages_by_thread(thread_id)
             return jsonify([message.serialize() for message in messages])
-
+            
+    
 
 
 api.add_resource(MessageResource, '/messages/<int:message_id>')

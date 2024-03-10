@@ -41,7 +41,7 @@ class ThreadByStageAndProjectResource(Resource):
         thread = ThreadService.get_thread_by_stage_and_project(stage_id, project_id)
         if thread:
             return jsonify(thread.serialize())
-        return {}, 200
+        return "The project stage combination does not have an associated thread", 200
 
 api.add_resource(ThreadByStageAndProjectResource, '/threads/<int:project_id>/<int:stage_id>')
 api.add_resource(ThreadResource, '/threads/<int:thread_id>')
