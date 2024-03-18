@@ -4,6 +4,10 @@ from app.models import ProjectStage
 from app import db
 from app.models import Project
 from app.models import Stage
+from app.services.thread_service import ThreadService
+import os
+
+
 
 class ProjectStageService:
     @staticmethod
@@ -32,24 +36,29 @@ class ProjectStageService:
 
     @staticmethod
     def get_stages_by_project_id(project_id):
-        # return ProjectStage.query.filter_by(project_id=project_id).all() 
-        #Se modifico lo anterior por lo siguiente porque no devolvia datos de las stages
-          # unión entre las tablas ProjectStage y Stage
+    # Realiza la consulta para obtener los datos de las etapas relacionadas con el proyecto
         stages_with_data = db.session.query(ProjectStage, Stage)\
             .join(Stage, ProjectStage.stage_id == Stage.stage_id)\
             .filter(ProjectStage.project_id == project_id)\
             .all()
 
+        # Lista para almacenar los datos de las etapas
         stages_data = []
 
+        # Itera sobre los resultados de la consulta
         for project_stage, stage in stages_with_data:
-            # diccionario con los datos de cada etapa
+            # Crea un diccionario con los datos de cada etapa y su información relacionada
             stage_data = {
-                'id': stage.stage_id,
+                'stage_id': stage.stage_id,
                 'name': stage.name,
-                'description': stage.description
+                'description': stage.description,
+                'assistant_id': project_stage.assistant_id,
+                'stage_description': project_stage.stage_description
             }
+            # Agrega el diccionario a la lista de datos de etapas
             stages_data.append(stage_data)
+
+        # Devuelve la lista de datos de etapas
         return stages_data
 
 
@@ -58,23 +67,29 @@ class ProjectStageService:
     
     @staticmethod
     def create_project_stage(project_id, stage_id, assistant_id=None, stage_description=None):
-
+        # Verifica si el proyecto y la etapa existen
         if not Project.query.get(project_id):
             raise ValueError("Proyecto no encontrado")
         if not Stage.query.get(stage_id):
             raise ValueError("Etapa no encontrada")
 
+        # Crea un nuevo hilo de conversación
+        # thread = ThreadService.create_openai_thread()
+        # print(thread)
+        # Crea un nuevo objeto ProjectStage con el asistente y el hilo de conversación
         new_project_stage = ProjectStage(
             project_id=project_id,
             stage_id=stage_id,
-            assistant_id=assistant_id,
+            assistant_id=assistant_id,  
             stage_description=stage_description
         )
+
         db.session.add(new_project_stage)
         try:
             db.session.commit()
         except Exception as e:
             db.session.rollback()
-            raise e  # Aquí podrías querer elevar una excepción más específica o manejarla de otra manera
+            raise e 
+        # Devuelve el nuevo objeto ProjectStage creado
+        print(new_project_stage,)
         return new_project_stage
-    

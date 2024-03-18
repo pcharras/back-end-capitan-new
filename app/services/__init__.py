@@ -3,6 +3,7 @@ from app.services.stage_service import StageService
 from app.services.project_stage_service import ProjectStageService
 from app.services.thread_service import ThreadService
 from app.services.message_service import MessageService
+from app.services.openai_service import OpenAIService
 
 # Aquí puedes importar otros servicios a medida que los crees
 
