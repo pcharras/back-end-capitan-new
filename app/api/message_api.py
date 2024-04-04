@@ -34,9 +34,11 @@ class MessageListResource(Resource):
         
     def post(self):
         data = request.get_json()
-        # print(data)
         # message = MessageService.create_message(**data)
-        response = OpenAIService.send_to_openai_and_save(**data)
+        thread_id, message, images, ass_id, sender = data.values()
+        print(thread_id, message, images, ass_id, sender)
+        # La imagen se trae correctamente
+        response = OpenAIService.send_to_openai_and_save(thread_id, message, ass_id, sender)
         response_from_openai = response 
         print("respuesta en la ruta",response_from_openai)
         return jsonify(response_from_openai.serialize())
