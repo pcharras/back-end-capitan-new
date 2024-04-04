@@ -19,13 +19,13 @@ client = OpenAI(api_key=api_key)
 assistant_instructions = {}
 
 def retrieve_instructions(ass_id):
-    if ass_id in assistant_instructions:
-        return assistant_instructions[ass_id]
-    else:
+    # if ass_id in assistant_instructions:
+    #     return assistant_instructions[ass_id]
+    # else:
         assistant = client.beta.assistants.retrieve(ass_id)
         instructions = assistant.instructions
         # Almacenar las instrucciones en el diccionario para futuros usos
-        assistant_instructions[ass_id] = instructions
+        # assistant_instructions[ass_id] = instructions
         return instructions
 
 
